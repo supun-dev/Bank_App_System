@@ -30,7 +30,7 @@ public class CardController {
 	private Response response;
 	
 	@PostMapping("/addNewCard")
-	public Card_Main addNewCard(@RequestBody Card_Main newCardReq)
+	public Response addNewCard(@RequestBody Card_Main newCardReq)
 	{
 		log.info("----- Preparing to add a new card {} " , newCardReq );
 		
@@ -43,8 +43,11 @@ public class CardController {
 		
 		cardMainRepo.save(newCardReq);
 		
+		response.setStatusCode(1);
+		response.setResponse(newCardReq);
+		
 		log.info("----- Card details retrieved from database : {} " , newCardReq );
-		return newCardReq;
+		return response;
 	}
 	
 	@GetMapping("/getAllCards")

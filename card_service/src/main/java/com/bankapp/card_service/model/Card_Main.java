@@ -3,28 +3,33 @@ package com.bankapp.card_service.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Data;
 
 @Data
 @Entity
+@JsonInclude(Include.NON_NULL)
 public class Card_Main {
 
+	@Id
+	@JsonProperty("Card_No")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cardNoSeq")
+	@SequenceGenerator(name = "cardNoSeq", sequenceName = "card_main_card_no_seq", allocationSize = 1)
+	private Long cardNo;
+	
 	@JsonProperty("Status_Code")
 	private int statusCode;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@JsonProperty("Card_Serial_No")
-	private Integer  cardSerialNo;
-	
-	@JsonProperty("Card_No")
-	private String cardNo;
 	
 	@JsonProperty("Added_By")
 	private String addedBy;
@@ -56,5 +61,18 @@ public class Card_Main {
 	@JsonProperty("Modified_Date")
 	private Date modifiedDate;
 	
-	
+	@Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        String jsonString = "";
+        try {
+            //mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            jsonString = mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return jsonString;
+    }
 }

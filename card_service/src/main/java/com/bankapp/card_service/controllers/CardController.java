@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class CardController {
 	@PostMapping("/addNewCard")
 	public Card_Main addNewCard(@RequestBody Card_Main newCardReq)
 	{
-		log.info("Add New Card Request \n {} " , newCardReq );
+		log.info("----- Preparing to add a new card {} " , newCardReq );
 		
 		Date currentDate = new Date();
 		
@@ -41,17 +42,34 @@ public class CardController {
 		newCardReq.setExpireDate(DateUtils.addYears(currentDate, 3));
 		
 		cardMainRepo.save(newCardReq);
-		log.info("Add New Card Request \n {} " , newCardReq );
+		
+		log.info("----- Card details retrieved from database : {} " , newCardReq );
 		return newCardReq;
 	}
 	
 	@GetMapping("/getAllCards")
 	public Response getAllCards()
 	{
-		List<Card_Main> listCardMain = cardMainRepo.findAll();
+		log.info("----- Preparing to retrieve card list from database.");
 		
+		List<Card_Main> listCardMain = cardMainRepo.findAll();
 		response.setStatusCode(1);
 		response.setResponse(listCardMain);
+		
+		log.info("----- Card list retrieved from database : {} " , listCardMain );
+		return response;
+	}
+	
+	@GetMapping("/getCardByCardNo/{cardNo}")
+	public Response getAllCards(@PathVariable("cardNo") Long cardNo)
+	{
+		log.info("----- Obtaining card details for card number {} " , cardNo );
+		
+		Card_Main cardMain = cardMainRepo.findById(cardNo).get();	
+		response.setStatusCode(1);
+		response.setResponse(cardMain);
+		
+		log.info("----- Card details retrieved from database : {} " , cardMain );
 		return response;
 	}
 	

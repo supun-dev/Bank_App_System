@@ -3,7 +3,6 @@ package com.bankapp.card_service.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -60,7 +59,7 @@ public class Card_Main {
 	
 	@JsonProperty("Modified_Date")
 	private Date modifiedDate;
-	
+
 	@Override
     public String toString() {
         ObjectMapper mapper = new ObjectMapper();

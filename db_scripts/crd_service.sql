@@ -7,7 +7,7 @@ CREATE SEQUENCE card_main_card_no_seq
   INCREMENT BY 1;
 
 CREATE TABLE card_main (
-	card_no varchar(80) default NEXTVAL('card_main_card_no_seq') NOT NULL,
+	card_no int8 default NEXTVAL('card_main_card_no_seq') NOT NULL,
 	card_type varchar(10) NULL,
 	added_by varchar(30) NULL,
 	primary_acc_no varchar(16) NULL,

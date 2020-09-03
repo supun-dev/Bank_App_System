@@ -1,9 +1,5 @@
 package com.bankapp.card_service.controllers;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bankapp.card_service.model.CardListResp;
 import com.bankapp.card_service.model.Card_Main;
-import com.bankapp.card_service.model.Response;
-import com.bankapp.card_service.repo.CardMainRepo;
+import com.bankapp.card_service.model.rest.Request;
+import com.bankapp.card_service.model.rest.Response;
+import com.bankapp.card_service.services.RouterServices;
+import com.bankapp.card_service.util.Constants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,56 +23,53 @@ import lombok.extern.slf4j.Slf4j;
 public class CardController {
 
 	@Autowired
-	private CardMainRepo cardMainRepo;
-	
-	@Autowired
-	private Response response;
+	RouterServices routerService;
 	
 	@PostMapping("/addNewCard")
-	public Response addNewCard(@RequestBody Card_Main newCardReq)
+	public Card_Main addNewCard(@RequestBody Card_Main newCardReq)
 	{
 		log.info("----- Preparing to add a new card {} " , newCardReq );
 		
-		Date currentDate = new Date();
+		Request request = new Request();
+		request.setMessageId(Constants.CONST_ADD_NEW_CARD);
+		request.setMessageContent(newCardReq);
+	
+		Response response = routerService.routRequest(request);
+		Card_Main cardResp = (Card_Main) response.getResponse();
 		
-		newCardReq.setIssueDate(currentDate);
-		newCardReq.setAddedDate(currentDate);
-		newCardReq.setModifiedDate(currentDate);	
-		newCardReq.setExpireDate(DateUtils.addYears(currentDate, 3));
-		
-		cardMainRepo.save(newCardReq);
-		
-		response.setStatusCode(1);
-		response.setResponse(newCardReq);
-		
-		log.info("----- Card details retrieved from database : {} " , newCardReq );
-		return response;
+		log.info("----- Card details retrieved from database : {} " , cardResp );
+		return cardResp;
 	}
 	
 	@GetMapping("/getAllCards")
-	public Response getAllCards()
+	public CardListResp getAllCards()
 	{
 		log.info("----- Preparing to retrieve card list from database.");
 		
-		List<Card_Main> listCardMain = cardMainRepo.findAll();
-		response.setStatusCode(1);
-		response.setResponse(listCardMain);
+		Request request = new Request();
+		request.setMessageId(Constants.CONST_GET_ALL_CARD);
 		
-		log.info("----- Card list retrieved from database : {} " , listCardMain );
-		return response;
+		Response response = routerService.routRequest(request);
+		CardListResp cardListResp = (CardListResp) response.getResponse();
+		
+		log.info("----- Card list retrieved from database : {} " , cardListResp );
+		return cardListResp;
 	}
 	
 	@GetMapping("/getCardByCardNo/{cardNo}")
-	public Response getAllCards(@PathVariable("cardNo") Long cardNo)
+	public Card_Main getAllCards(@PathVariable("cardNo") Long cardNo)
 	{
 		log.info("----- Obtaining card details for card number {} " , cardNo );
 		
-		Card_Main cardMain = cardMainRepo.findById(cardNo).get();	
-		response.setStatusCode(1);
-		response.setResponse(cardMain);
+		Request request = new Request();
+		request.setMessageId(Constants.CONST_GET_CARD_BY_CRDNO);
+		request.setMessageContent(cardNo);
 		
-		log.info("----- Card details retrieved from database : {} " , cardMain );
-		return response;
+		Response response = routerService.routRequest(request);
+		Card_Main cardMainResp = (Card_Main) response.getResponse();
+		
+		log.info("----- Card details retrieved from database : {} " , cardMainResp );
+		return cardMainResp;
 	}
 	
 }

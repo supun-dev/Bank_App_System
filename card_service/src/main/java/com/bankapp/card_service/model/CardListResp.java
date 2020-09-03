@@ -1,14 +1,14 @@
 package com.bankapp.card_service.model;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
 @Data
 @Component
-public class Response {
+public class CardListResp {
 
-	private Integer statusCode;
-	private Object  response;
-	
+	private List<Card_Main> listCards;
 }

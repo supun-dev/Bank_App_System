@@ -62,7 +62,7 @@ public class Card_Main {
 
         String jsonString = "";
         try {
-            //mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            //mapper.enable(SerializationFeature.INDENT_OUTPUT);  --Used for obtaining a formatted json
             jsonString = mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
